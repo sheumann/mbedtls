@@ -39,7 +39,7 @@
 #if !defined(MBEDTLS_TIMING_ALT)
 
 #if !defined(unix) && !defined(__unix__) && !defined(__unix) && \
-    !defined(__APPLE__) && !defined(_WIN32)
+    !defined(__APPLE__) && !defined(_WIN32) && !defined(__GNO__)
 #error "This module only works on Unix and Windows, see MBEDTLS_TIMING_C in config.h"
 #endif
 
@@ -304,11 +304,21 @@ unsigned long mbedtls_timing_get_timer( struct mbedtls_timing_hr_time *val, int 
     return( delta );
 }
 
-static void sighandler( int signum )
+#ifdef __ORCAC__
+#pragma databank 1
+#endif
+static void sighandler( int signum
+#ifdef __GNO__
+                        , int unused
+#endif
+)
 {
     mbedtls_timing_alarmed = 1;
     signal( signum, sighandler );
 }
+#ifdef __ORCAC__
+#pragma databank 0
+#endif
 
 void mbedtls_set_alarm( int seconds )
 {
