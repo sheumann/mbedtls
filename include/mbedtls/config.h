@@ -872,7 +872,7 @@
  *
  * Uncomment this macro to disable the built-in platform entropy functions.
  */
-//#define MBEDTLS_NO_PLATFORM_ENTROPY
+#define MBEDTLS_NO_PLATFORM_ENTROPY
 
 /**
  * \def MBEDTLS_ENTROPY_FORCE_SHA256
@@ -916,7 +916,7 @@
  * \note The entropy collector will write to the seed file before entropy is
  *       given to an external source, to update it.
  */
-//#define MBEDTLS_ENTROPY_NV_SEED
+#define MBEDTLS_ENTROPY_NV_SEED
 
 /**
  * \def MBEDTLS_MEMORY_DEBUG
