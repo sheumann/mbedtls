@@ -191,6 +191,11 @@ int mbedtls_platform_set_printf( int (*printf_func)( const char *, ... ) );
 int mbedtls_platform_win32_snprintf( char *s, size_t n, const char *fmt, ... );
 #endif
 
+#if defined(__ORCAC__)
+/* Replacement snprintf function for use on Apple IIgs with ORCA/C */
+int rpl_snprintf(char *, size_t, const char *, ...);
+#endif
+
 #if defined(MBEDTLS_PLATFORM_SNPRINTF_ALT)
 extern int (*mbedtls_snprintf)( char * s, size_t n, const char * format, ... );
 
