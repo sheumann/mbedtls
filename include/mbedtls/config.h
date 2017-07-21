@@ -2681,4 +2681,16 @@
 
 #include "check_config.h"
 
+#ifdef __ORCAC__
+#define GET_UINT32_LE(n,b,i)     \
+{                                \
+    (n) = *(uint32_t*)&(b)[(i)]; \
+}
+
+#define PUT_UINT32_LE(n,b,i)     \
+{                                \
+    *(uint32_t*)&(b)[(i)] = (n); \
+}
+#endif /* __ORCAC__ */
+
 #endif /* MBEDTLS_CONFIG_H */
