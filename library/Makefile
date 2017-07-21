@@ -1,11 +1,23 @@
 
 # Also see "include/mbedtls/config.h"
 
+ifdef IIGS
+CC      = occ
+MAKELIB = iix makelib
+CFLAGS  = --gno -O95 -S $@
+WARNING_CFLAGS ?= 
+CFLAGS  += -r -Dcomp=_comp
+endif
+
 CFLAGS	?= -O2
 WARNING_CFLAGS ?=  -Wall -W -Wdeclaration-after-statement
 LDFLAGS ?=
 
+ifndef IIGS
 LOCAL_CFLAGS = $(WARNING_CFLAGS) -I../include -D_FILE_OFFSET_BITS=64
+else
+LOCAL_CFLAGS = $(WARNING_CFLAGS) -I../include -I../include/mbedtls
+endif
 LOCAL_LDFLAGS =
 
 ifdef DEBUG
@@ -87,7 +99,11 @@ else
 all: shared static
 endif
 
+ifndef IIGS
 static: libmbedcrypto.a libmbedx509.a libmbedtls.a
+else
+static: libmbedcrypto libmbedx509 libmbedtls
+endif
 
 shared: libmbedcrypto.$(DLEXT) libmbedx509.$(DLEXT) libmbedtls.$(DLEXT)
 
@@ -97,6 +113,11 @@ libmbedtls.a: $(OBJS_TLS)
 	$(AR) -rc $@ $(OBJS_TLS)
 	echo "  RL    $@"
 	$(AR) -s $@
+
+libmbedtls: $(OBJS_TLS)
+	echo "MAKELIB $@"
+	rm -f $@
+	$(MAKELIB) $@ $(OBJS_TLS:%=+%) > /dev/null
 
 libmbedtls.$(SOEXT_TLS): $(OBJS_TLS) libmbedx509.so
 	echo "  LD    $@"
@@ -121,6 +142,11 @@ libmbedx509.a: $(OBJS_X509)
 	echo "  RL    $@"
 	$(AR) -s $@
 
+libmbedx509: $(OBJS_X509)
+	echo "MAKELIB $@"
+	rm -f $@
+	$(MAKELIB) $@ $(OBJS_X509:%=+%) > /dev/null
+
 libmbedx509.$(SOEXT_X509): $(OBJS_X509) libmbedcrypto.so
 	echo "  LD    $@"
 	$(CC) -shared -Wl,-soname,$@ -L. -lmbedcrypto $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@ $(OBJS_X509)
@@ -144,6 +170,11 @@ libmbedcrypto.a: $(OBJS_CRYPTO)
 	echo "  RL    $@"
 	$(AR) -s $@
 
+libmbedcrypto: $(OBJS_CRYPTO)
+	echo "MAKELIB $@"
+	rm -f $@
+	$(MAKELIB) $@ $(OBJS_CRYPTO:%=+%) > /dev/null
+
 libmbedcrypto.$(SOEXT_CRYPTO): $(OBJS_CRYPTO)
 	echo "  LD    $@"
 	$(CC) -shared -Wl,-soname,$@ $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@ $(OBJS_CRYPTO)
@@ -163,6 +194,9 @@ libmbedcrypto.dll: $(OBJS_CRYPTO)
 .c.o:
 	echo "  CC    $<"
 	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) -c $<
+ifdef IIGS
+	mv $(@:.o=.a) $@
+endif
 
 clean:
 ifndef WINDOWS

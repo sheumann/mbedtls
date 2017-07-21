@@ -2,18 +2,38 @@
 # To compile on SunOS: add "-lsocket -lnsl" to LDFLAGS
 # To compile with PKCS11: add "-lpkcs11-helper" to LDFLAGS
 
+ifdef IIGS
+CC      = occ
+MAKELIB = iix makelib
+CFLAGS  = --gno -O95
+WARNING_CFLAGS ?= 
+CFLAGS  += -Dcomp=_comp
+endif
+
 CFLAGS	?= -O2
 WARNING_CFLAGS ?= -Wall -W -Wdeclaration-after-statement
 LDFLAGS ?=
 
+ifndef IIGS
 LOCAL_CFLAGS = $(WARNING_CFLAGS) -I../include -D_FILE_OFFSET_BITS=64
 LOCAL_LDFLAGS = -L../library 			\
 		-lmbedtls$(SHARED_SUFFIX)	\
 		-lmbedx509$(SHARED_SUFFIX)	\
 		-lmbedcrypto$(SHARED_SUFFIX)
+else
+LOCAL_CFLAGS = $(WARNING_CFLAGS) -I../include -I../include/mbedtls
+LOCAL_LDFLAGS = -L../library	\
+		-llibmbedtls	\
+		-llibmbedx509	\
+		-llibmbedcrypto
+endif
 
 ifndef SHARED
+ifndef IIGS
 DEP=../library/libmbedcrypto.a ../library/libmbedx509.a ../library/libmbedtls.a
+else
+DEP=../library/libmbedcrypto ../library/libmbedx509 ../library/libmbedtls
+endif
 else
 DEP=../library/libmbedcrypto.$(DLEXT) ../library/libmbedx509.$(DLEXT) ../library/libmbedtls.$(DLEXT)
 endif
@@ -279,7 +299,7 @@ x509/req_app$(EXEXT): x509/req_app.c $(DEP)
 
 clean:
 ifndef WINDOWS
-	rm -f $(APPS)
+	rm -f $(APPS) $(APPS:%=%.a) $(APPS:%=%.root)
 else
 	del /S /Q /F *.o *.exe
 endif
