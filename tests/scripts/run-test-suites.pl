@@ -36,13 +36,23 @@ if ( defined($switch) && ( $switch eq "-v" || $switch eq "--verbose" ) ) {
 # All test suites = executable files, excluding source files, debug
 # and profiling information, etc. We can't just grep {! /\./} because
 #some of our test cases' base names contain a dot.
-my @suites = grep { -x $_ || /\.exe$/ } glob 'test_suite_*';
+my @suites;
+if ( $ENV{IIGS} ) {
+    @suites = grep { `iix getfileinfo $_` =~ m/fileType: b5/ } glob 'test_suite_*';
+} else {
+    @suites = grep { -x $_ || /\.exe$/ } glob 'test_suite_*';
+}
 die "$0: no test suite found\n" unless @suites;
 
 # in case test suites are linked dynamically
 $ENV{'LD_LIBRARY_PATH'} = '../library';
 
-my $prefix = $^O eq "MSWin32" ? '' : './';
+my $prefix;
+if ( $ENV{IIGS} ) {
+    $prefix = 'iix ';
+} else {
+    $prefix = $^O eq "MSWin32" ? '' : './';
+}
 
 my ($failed_suites, $total_tests_run, $failed, $suite_cases_passed,
     $suite_cases_failed, $suite_cases_skipped, $total_cases_passed,
