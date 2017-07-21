@@ -117,6 +117,8 @@ void mbedtls_sha512_finish( mbedtls_sha512_context *ctx, unsigned char output[64
 extern "C" {
 #endif
 
+#if !defined(MBEDTLS_NO_UINT64_T) || defined(MBEDTLS_SHA512_ALT)
+
 /**
  * \brief          Output = SHA-512( input buffer )
  *
@@ -137,6 +139,8 @@ int mbedtls_sha512_self_test( int verbose );
 
 /* Internal use */
 void mbedtls_sha512_process( mbedtls_sha512_context *ctx, const unsigned char data[128] );
+
+#endif
 
 #ifdef __cplusplus
 }
