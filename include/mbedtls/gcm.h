@@ -37,6 +37,8 @@
 extern "C" {
 #endif
 
+#if !defined(MBEDTLS_NO_UINT64_T)
+
 /**
  * \brief          GCM context structure
  */
@@ -212,6 +214,8 @@ void mbedtls_gcm_free( mbedtls_gcm_context *ctx );
  * \return         0 if successful, or 1 if the test failed
  */
 int mbedtls_gcm_self_test( int verbose );
+
+#endif
 
 #ifdef __cplusplus
 }

@@ -40,6 +40,8 @@
 extern "C" {
 #endif
 
+#if !defined(MBEDTLS_NO_UINT64_T)
+
 /**
  * \brief          SHA-512 context structure
  */
@@ -100,6 +102,8 @@ void mbedtls_sha512_update( mbedtls_sha512_context *ctx, const unsigned char *in
  * \param output   SHA-384/512 checksum result
  */
 void mbedtls_sha512_finish( mbedtls_sha512_context *ctx, unsigned char output[64] );
+
+#endif
 
 #ifdef __cplusplus
 }

@@ -32,6 +32,10 @@
 #define _CRT_SECURE_NO_DEPRECATE 1
 #endif
 
+#if defined(__ORCAC__)
+#define MBEDTLS_NO_UINT64_T
+#endif
+
 /**
  * \name SECTION: System support
  *
@@ -1905,7 +1909,7 @@
  * This module enables the AES-GCM and CAMELLIA-GCM ciphersuites, if other
  * requisites are enabled as well.
  */
-#define MBEDTLS_GCM_C
+//#define MBEDTLS_GCM_C
 
 /**
  * \def MBEDTLS_HAVEGE_C
@@ -2286,7 +2290,7 @@
  *
  * This module adds support for SHA-384 and SHA-512.
  */
-#define MBEDTLS_SHA512_C
+//#define MBEDTLS_SHA512_C
 
 /**
  * \def MBEDTLS_SSL_CACHE_C

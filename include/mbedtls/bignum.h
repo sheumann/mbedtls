@@ -129,8 +129,10 @@
      #define MBEDTLS_HAVE_INT32
      typedef  int32_t mbedtls_mpi_sint;
      typedef uint32_t mbedtls_mpi_uint;
-     typedef uint64_t mbedtls_t_udbl;
-     #define MBEDTLS_HAVE_UDBL
+     #if !defined(MBEDTLS_NO_UINT64_T)
+        typedef uint64_t mbedtls_t_udbl;
+        #define MBEDTLS_HAVE_UDBL
+     #endif
   #endif /* !MBEDTLS_HAVE_INT32 && __GNUC__ && 64-bit platform */
 #endif /* !MBEDTLS_HAVE_INT32 && _MSC_VER && _M_AMD64 */
 
